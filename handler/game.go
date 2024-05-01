@@ -23,3 +23,13 @@ func (h *handler) Test(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("static/views/test.html"))
 	tmpl.Execute(w, nil)
 }
+
+func (h *handler) StyleTest(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("static/views/styletest.html"))
+	tmpl.Execute(w, nil)
+}
+
+func (h *handler) Trash(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("static/views/trash.html"))
+	tmpl.Execute(w, nil)
+}

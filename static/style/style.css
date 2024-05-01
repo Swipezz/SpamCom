@@ -1,3 +1,9 @@
-body {
-    background-color: rgb(19, 84, 84);
+.container {
+    position: relative;
+    width: 1000px;
+    height: 500px;
+    border: 2px solid;
+}
+.follow-element {
+    cursor: pointer;
 }

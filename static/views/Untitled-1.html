@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cursor Dot</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
+    #cursor {
+        width: 10px;
+        height: 10px;
+        background-color: black;
+        border-radius: 50%;
+        position: absolute;
+        z-index: 9999;
+        pointer-events: none;
+    }
+
+    #content {
+        width: 100%;
+        height: 100vh;
+        background-color: lightgray;
+        position: relative;
+    }
+
+    #barrier {
+        width: 500px;
+        height: 500px;
+        background-color: red;
+        position: absolute;
+        top: calc(50% - 250px);
+        left: calc(50% - 250px);
+    }
+</style>
+</head>
+<body>
+
+<div id="content">
+    <div id="cursor"></div>
+    <div id="barrier"></div>
+</div>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    const content = document.getElementById('content');
+    const barrier = document.getElementById('barrier');
+
+    content.addEventListener('click', () => {
+        content.requestPointerLock();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (document.pointerLockElement === content) {
+            const movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+            const movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+
+            const cursorRect = cursor.getBoundingClientRect();
+            let newX = cursorRect.left + movementX;
+            let newY = cursorRect.top + movementY;
+
+            // Check if the cursor is within the barrier
+            if (newX < barrier.offsetLeft) {
+                newX = barrier.offsetLeft;
+            } else if (newX > barrier.offsetLeft + barrier.offsetWidth - cursor.offsetWidth) {
+                newX = barrier.offsetLeft + barrier.offsetWidth - cursor.offsetWidth;
+            }
+
+            if (newY < barrier.offsetTop) {
+                newY = barrier.offsetTop;
+            } else if (newY > barrier.offsetTop + barrier.offsetHeight - cursor.offsetHeight) {
+                newY = barrier.offsetTop + barrier.offsetHeight - cursor.offsetHeight;
+            }
+
+            cursor.style.left = newX + 'px';
+            cursor.style.top = newY + 'px';
+        }
+    });
+
+    document.addEventListener('pointerlockchange', () => {
+        if (document.pointerLockElement !== content) {
+            document.removeEventListener('mousemove', updateCursorPosition);
+        }
+    });
+</script>
+
+</body>
+</html>

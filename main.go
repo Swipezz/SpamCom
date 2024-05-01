@@ -29,6 +29,8 @@ func main() {
 
 	r.Get("/", Handler.MainMenu)
 	r.Get("/test", Handler.Test)
+	r.Get("/styletest", Handler.StyleTest)
+	r.Get("/trash", Handler.Trash)
 
 	fmt.Println("Server Running at :8080")
 	http.ListenAndServe(":8080", r)
