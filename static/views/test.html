@@ -1,68 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<link rel="stylesheet" href="static/style/style.css">
-<title>Follow Content</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+body {
+    padding: 0;
+    margin: 0;
+}
+
+        .parent {
+    width: 100vw; /* Adjust the width of the parent div as needed */
+    height: 100vh; /* Adjust the height of the parent div as needed */
+    overflow: hidden; /* Ensure the image does not overflow its container */
+    position: relative; /* Required for absolute positioning of the img */
+}
+
+.parent img {
+    width: 100%; /* Set the width of the image to auto */
+    height: 100%; /* Set the height of the image to 100% of its parent container */
+    position: absolute; /* Position the image absolutely within its parent */
+    top: 0; /* Align the top of the image with the top of its parent */
+    left: 0; /* Align the left of the image with the left of its parent */
+    right: 0; /* Align the right of the image with the right of its parent */
+    bottom: 0; /* Align the bottom of the image with the bottom of its parent */
+}
+
+    </style>
 </head>
 <body>
-    <div class="container">
-            <button id="1" class="follow-element">Follow Me</button>
-            <button id="2" class="follow-element">Follow Me</button>
-            <button id="3" class="follow-element">Follow Me</button>
-            <button id="4" class="follow-element">Follow Me</button>
-            <br><br><br>
-            <button id="trash">Trash</button>
-        </div>
+    <div class="parent">
+        <img src="/static/public/Frame.png" alt="Image">
     </div>
-
-
-<script>
-    var followItems = document.querySelectorAll(".follow-element")
-
-    function moveItem(event) {
-        if (this.dataset.active === "true") {
-            var maxX = this.parentElement.offsetWidth - this.offsetWidth
-            var maxY = this.parentElement.offsetHeight - this.offsetHeight
-
-            var newX = Math.min(maxX, Math.max(0, event.clientX - this.offsetWidth / 2))
-            var newY = Math.min(maxY, Math.max(0, event.clientY - this.offsetHeight / 2))
-
-            this.style.left = newX + "px"
-            this.style.top = newY + "px"
-        }
-    }
-
-    followItems.forEach(function(item) {
-        item.addEventListener("mousedown", function(event) {
-            item.dataset.active = "true"
-            item.style.pointerEvents = "none"
-            item.style.position = "absolute"
-        })
-    })
-
-    document.addEventListener("mousemove", function(event) {
-        followItems.forEach(function(item) {
-            moveItem.call(item, event)
-        })
-    })
-
-    document.addEventListener("mouseup", function() {
-        followItems.forEach(function(item) {
-            item.dataset.active = "false"
-            item.style.pointerEvents = "auto"
-        })
-    })
-
-    document.getElementById("trash").addEventListener("mouseup", function() {
-        followItems.forEach(function(item) {
-            if (item.dataset.active === "true") {
-                item.remove()
-            }
-        })
-    })
-</script>
 </body>
 </html>
