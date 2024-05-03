@@ -31,6 +31,7 @@ func main() {
 	r.Get("/test", Handler.Test)
 	r.Get("/styletest", Handler.StyleTest)
 	r.Get("/trash", Handler.Trash)
+	r.Get("/image", Handler.Image)
 
 	fmt.Println("Server Running at :8080")
 	http.ListenAndServe(":8080", r)

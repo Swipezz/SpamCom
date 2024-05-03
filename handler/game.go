@@ -33,3 +33,8 @@ func (h *handler) Trash(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("static/views/trash.html"))
 	tmpl.Execute(w, nil)
 }
+
+func (h *handler) Image(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("static/views/image.html"))
+	tmpl.Execute(w, nil)
+}
