@@ -12,10 +12,10 @@
         <div id="container2">
             <div id="cursor"></div>
             <div id="grid-container">
-                <div id="1" class="grid-item"></div>
-                <div id="2" class="grid-item"></div>
-                <div id="3" class="grid-item"></div>
-                <div id="4" class="grid-item"></div>
+                <div id="1" class="grid-item"><button id="1" class="follow-element">1</button></div>
+                <div id="2" class="grid-item"><button id="2" class="follow-element">2</button></div>
+                <div id="3" class="grid-item"><button id="3" class="follow-element">3</button></div>
+                <div id="4" class="grid-item"><button id="4" class="follow-element">4</button></div>
                 <div id="5" class="grid-item"></div>
                 <div id="6" class="grid-item"></div>
                 <div id="7" class="grid-item"></div>
@@ -86,10 +86,6 @@
                 <div id="72" class="grid-item"></div>
             </div>
             <div id="taskbar">
-                <button id="1" class="follow-element">1</button>
-                <button id="2" class="follow-element">2</button>
-                <button id="3" class="follow-element">3</button>
-                <button id="4" class="follow-element">4</button>
             </div>
         </div>
     <script>
@@ -131,14 +127,33 @@ function moveItem(event) {
 document.addEventListener("mousemove", moveCursor);
 
 // Drag item
+var childParent = null
 followItems.forEach(function(item) {
+    window.addEventListener("resize", function(event) {
+        let rect = document.getElementById("1").getBoundingClientRect();
+        let height = rect.height;
+        let width = rect.width;
+        item.style.height = height + "px";
+        item.style.width = width + "px";
+    })
+
     item.addEventListener("mousedown", function(event) {
+        childParent = item.parentNode.id
         item.dataset.active = "true"
+
+        if (item.dataset.active == "true") {
+            let rect = document.getElementById("1").getBoundingClientRect();
+            let height = rect.height;
+            let width = rect.width;
+            item.style.height = height + "px";
+            item.style.width = width + "px";
+        }
+
         item.style.pointerEvents = "none"
         item.style.position = "absolute"
         item.style.zIndex = "1"
         document.body.style.cursor = "none"
-        
+
         gridContainer.appendChild(item)
     })
 })
@@ -154,24 +169,12 @@ document.addEventListener("mousemove", function(event) {
 gridTiles.forEach(function(tile) {
     tile.addEventListener("mouseup", function(event) {
         followItems.forEach(function(item) {
-
-                    // Find and adjust size of empty grid
-        for (var i = 0; i < gridTiles.length; i++) {
-            var grid = gridTiles[i];
-            if (grid.childElementCount == 0) {
-                console.log(grid);
-                var scanGrid = getGridSize(grid.id);
-                tile.style.width = scanGrid.width + "px";
-                tile.style.height = scanGrid.height + "px";
-                console.log(tile.style.width);
-                console.log(scanGrid.width);
-                break;
-            }
-        }
-
             if (item.dataset.active === "true") {
                 if (tile.id == 12 || tile.id == 72) {
                     item.remove()
+                }
+                if (tile.childElementCount != 0) {
+                    document.getElementById(childParent).appendChild(item);
                 } else {
                     tile.appendChild(item)
                 }
@@ -180,6 +183,8 @@ gridTiles.forEach(function(tile) {
             item.dataset.active = "false"
             item.style.pointerEvents = "auto"
             item.style.position = "static"
+            item.style.height = "100%px"
+            item.style.width = "100%px"
             document.body.style.cursor = "auto"
         });
     });
@@ -188,14 +193,11 @@ gridTiles.forEach(function(tile) {
 
 function getGridSize(gridId) {
     let grids = document.getElementById(gridId)
-    // Get the bounding rectangle of the grid element
-    var rect = grids.getBoundingClientRect();
+    let rect = grids.getBoundingClientRect();
     
-    // Extract width and height from the bounding rectangle
-    var width = rect.width;
-    var height = rect.height;
+    let width = rect.width;
+    let height = rect.height;
     
-    // Return an object containing width and height
     return { width: width, height: height };
 }
 
