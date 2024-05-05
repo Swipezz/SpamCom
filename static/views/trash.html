@@ -8,14 +8,17 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="container1" class="container1 position-relative">
+    <div id="container1" class="position-relative">
+        <img id="frameimg" src="/static/public/Frame.png" alt="">
+        <img id="garisimg" src="/static/public/Garis.png" alt="">
         <div id="container2">
-            <div id="cursor"></div>
+            <div id="cursor"><img src="/static/public/Cursor.png" alt=""></div>
             <div id="grid-container">
-                <div id="1" class="grid-item"><button id="1" class="follow-element">1</button></div>
-                <div id="2" class="grid-item"><button id="2" class="follow-element">2</button></div>
-                <div id="3" class="grid-item"><button id="3" class="follow-element">3</button></div>
-                <div id="4" class="grid-item"><button id="4" class="follow-element">4</button></div>
+                <img id="innerimg" src="/static/public/Inner.png" alt="">
+                <div id="1" class="grid-item"><div id="btn1" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
+                <div id="2" class="grid-item"><div id="btn2" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
+                <div id="3" class="grid-item"><div id="btn3" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
+                <div id="4" class="grid-item"><div id="btn4" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
                 <div id="5" class="grid-item"></div>
                 <div id="6" class="grid-item"></div>
                 <div id="7" class="grid-item"></div>
@@ -86,6 +89,7 @@
                 <div id="72" class="grid-item"></div>
             </div>
             <div id="taskbar">
+                asdas
             </div>
         </div>
     <script>
@@ -151,8 +155,6 @@ followItems.forEach(function(item) {
 
         item.style.pointerEvents = "none"
         item.style.position = "absolute"
-        item.style.zIndex = "1"
-        document.body.style.cursor = "none"
 
         gridContainer.appendChild(item)
     })
@@ -170,13 +172,13 @@ gridTiles.forEach(function(tile) {
     tile.addEventListener("mouseup", function(event) {
         followItems.forEach(function(item) {
             if (item.dataset.active === "true") {
-                if (tile.id == 12 || tile.id == 72) {
-                    item.remove()
-                }
                 if (tile.childElementCount != 0) {
                     document.getElementById(childParent).appendChild(item);
                 } else {
                     tile.appendChild(item)
+                }
+                if (tile.id == 12 || tile.id == 72) {
+                    item.remove();
                 }
             }
 
@@ -185,7 +187,6 @@ gridTiles.forEach(function(tile) {
             item.style.position = "static"
             item.style.height = "100%px"
             item.style.width = "100%px"
-            document.body.style.cursor = "auto"
         });
     });
 });
