@@ -112,18 +112,6 @@ var container1 = document.getElementById("container1")
 var cursor = document.getElementById("cursor")
 var cursorParent = cursor.parentElement
 
-function moveCursor(event) {
-    var parentRect = cursorParent.getBoundingClientRect()
-    var newX = event.clientX - parentRect.left - cursor.offsetWidth / 2
-    var newY = event.clientY - parentRect.top - cursor.offsetHeight / 2
-
-    newX = Math.min(Math.max(newX, 0), parentRect.width - cursor.offsetWidth)
-    newY = Math.min(Math.max(newY, 0), parentRect.height - cursor.offsetHeight)
-
-    cursor.style.left = newX + "px"
-    cursor.style.top = newY + "px"
-}
-
 function moveItem(event) {
     if (this.dataset.active === "true") {
         var containerRect = this.parentElement.getBoundingClientRect()
@@ -139,42 +127,55 @@ function moveItem(event) {
 }
 
 // Move cursor
-document.addEventListener("mousemove", moveCursor);
+document.addEventListener("mousemove", function(event) {
+    let parentRect = cursorParent.getBoundingClientRect()
+    let newX = event.clientX - parentRect.left - cursor.offsetWidth / 2
+    let newY = event.clientY - parentRect.top - cursor.offsetHeight / 2
+
+    newX = Math.min(Math.max(newX, 0), parentRect.width - cursor.offsetWidth)
+    newY = Math.min(Math.max(newY, 0), parentRect.height - cursor.offsetHeight)
+
+    cursor.style.left = newX + "px"
+    cursor.style.top = newY + "px"
+})
 
 // Drag item
-var childParent = null
+var onHold = false
+var onMove = false
+var onItem = ""
 followItems.forEach(function(item) {
-    window.addEventListener("resize", function(event) {
-        let rect = document.getElementById("1").getBoundingClientRect();
-        let height = rect.height;
-        let width = rect.width;
-        item.style.height = height + "px";
-        item.style.width = width + "px";
-    })
-
     item.addEventListener("mousedown", function(event) {
+        onHold = true
         childParent = item.parentNode.id
         item.dataset.active = "true"
 
         if (item.dataset.active == "true") {
-            let rect = document.getElementById("1").getBoundingClientRect();
-            let height = rect.height;
-            let width = rect.width;
-            item.style.height = height + "px";
-            item.style.width = width + "px";
+            let rect = document.getElementById("1").getBoundingClientRect()
+            let height = rect.height
+            let width = rect.width
+            item.style.height = height + "px"
+            item.style.width = width + "px"
         }
 
         item.style.pointerEvents = "none"
         item.style.position = "absolute"
 
-        gridContainer.appendChild(item)
+        onItem = item
     })
 })
 
 // Move item
 document.addEventListener("mousemove", function(event) {
     followItems.forEach(function(item) {
-        moveItem.call(item, event)
+        if (onHold == true) {
+            onMove = true
+            if (onMove == true) {
+                if (onItem.parentElement.id != "grid-container") {
+                    gridContainer.appendChild(onItem)
+                }
+            }
+            moveItem.call(item, event)
+        }
     })
 })
 
@@ -182,36 +183,38 @@ document.addEventListener("mousemove", function(event) {
 gridTiles.forEach(function(tile) {
     tile.addEventListener("mouseup", function(event) {
         followItems.forEach(function(item) {
-            if (item.dataset.active === "true") {
+            if (item.dataset.active === "true") { 
+                onHold = false
+                onMove = false 
+                onItem = "" 
                 if (tile.childElementCount != 0) {
                     document.getElementById(childParent).appendChild(item);
                 } else {
-                    tile.appendChild(item)
+                    tile.appendChild(item) 
                 }
                 if (tile.id == 12 || tile.id == 72) {
-                    item.remove();
+                    item.remove()
                 }
             }
 
             item.dataset.active = "false"
             item.style.pointerEvents = "auto"
             item.style.position = "static"
-            item.style.height = "100%px"
-            item.style.width = "100%px"
+            item.style.height = "100%"
+            item.style.width = "100%"
+            item.style.removeProperty("top")
+            item.style.removeProperty("left") 
         });
     });
 });
 
+// Open mail
+followItems.forEach(function(item) {
+    item.addEventListener("dblclick", function(event) {
+        console.log("asd");
+    });
+});
 
-function getGridSize(gridId) {
-    let grids = document.getElementById(gridId)
-    let rect = grids.getBoundingClientRect();
-    
-    let width = rect.width;
-    let height = rect.height;
-    
-    return { width: width, height: height };
-}
 
     </script>
 </body>

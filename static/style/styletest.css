@@ -46,10 +46,9 @@ body {
 
 #leftborder {
     bottom: 0.1%;
-    background-image: url(/static/public/Border.png);
-    width: 13%;
+    width: 12%;
     height: 7.2%;
-    left: 2%;
+    left: 2.5%;
     position: absolute;
     display: flex;
     align-items: center;
@@ -58,7 +57,6 @@ body {
 
 #rightborder {
     bottom: 0.1%;
-    background-color: rgb(72, 217, 43);
     width: 25%;
     height: 7.2%;
     right: 2%;
