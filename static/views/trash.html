@@ -99,6 +99,7 @@
                     <div id="moneyborder">
                     </div>
                     <div id="timeborder">
+                        <p id="time">23:23</p>
                     </div>
                 </div>
             </div>
@@ -111,6 +112,16 @@ var container2 = document.getElementById("container2")
 var container1 = document.getElementById("container1")
 var cursor = document.getElementById("cursor")
 var cursorParent = cursor.parentElement
+
+function displayUserLocalTime() {
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const now = new Date().toLocaleString("en-US", {timeZone: userTimezone});
+    const date = new Date(now)
+    var formatDate = date.getHours()+":"+date.getMinutes()
+    document.getElementById("time").textContent = formatDate;
+}
+displayUserLocalTime();
+setInterval(displayUserLocalTime, 60000);
 
 function moveItem(event) {
     if (this.dataset.active === "true") {
@@ -148,7 +159,7 @@ followItems.forEach(function(item) {
         onHold = true
         childParent = item.parentNode.id
         item.dataset.active = "true"
-
+        
         if (item.dataset.active == "true") {
             let rect = document.getElementById("1").getBoundingClientRect()
             let height = rect.height

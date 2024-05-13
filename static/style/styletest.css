@@ -1,3 +1,8 @@
+@font-face {
+    font-family: PixelFont;
+    src: url(fonts/pixelFont.ttf);
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -74,9 +79,19 @@ body {
 
 #moneyborder {
     background-color: yellow;
+    font-family: PixelFont;
 }
 #timeborder {
-    background-color: brown
+    font-family: PixelFont;
+    display: grid;
+    place-items: center;
+}
+
+#time {
+    color: rgb(0, 0, 0);
+    font-size: 2.3vw;
+    padding: 0;
+    margin: 0;
 }
 
 #container1 {
