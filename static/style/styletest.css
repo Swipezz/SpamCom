@@ -31,6 +31,29 @@ body {
     z-index: 100;
 }
 
+.borderpopup {
+    position: absolute;
+    z-index: 101;
+    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url(/static/public/BorderPopup.png);
+    background-size: cover;
+    width: 50%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.insidepopup {
+    z-index: 102;
+    background-color: white;
+    width: 92%;
+    height: 84%;
+}
+
 .mail,
 #recycle,
 #send {
@@ -62,12 +85,12 @@ body {
 
 #rightborder {
     bottom: 0.1%;
-    width: 25%;
+    width: 30%;
     height: 7.2%;
-    right: 2%;
+    right: 1%;
     position: absolute;
     display: grid;
-    grid-template-columns: 20% 40% 40%;
+    grid-template-columns: 15% 45% 40%;
 }
 
 #volumeborder,
@@ -75,18 +98,13 @@ body {
 #timeborder {
     width: 100%;
     height: 100%;
-}
-
-#moneyborder {
-    background-color: yellow;
-    font-family: PixelFont;
-}
-#timeborder {
+    border-left: 3px solid;
     font-family: PixelFont;
     display: grid;
     place-items: center;
 }
 
+#money,
 #time {
     color: rgb(0, 0, 0);
     font-size: 2.3vw;
@@ -165,7 +183,7 @@ body {
 
 #cursor {
     position: absolute;
-    z-index: 99;
+    z-index: 102;
     pointer-events: none;
     transform: translate(49%, 50%);
     width: 2%; 
