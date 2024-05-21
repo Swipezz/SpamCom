@@ -16,6 +16,14 @@ body {
     overflow: hidden;
 }
 
+.garispopuphead p,
+.garispopupbody p {
+    font-family: PixelFont;
+    font-size: calc(1vw + 1vh);
+    margin: 0;
+    padding: 0;
+}
+
 .grid-item {
     border: none;
     background-color: rgb(78, 157, 126);
@@ -33,25 +41,68 @@ body {
 
 .borderpopup {
     position: absolute;
+    width: 45%;
+    height: 70%;
     z-index: 101;
-    pointer-events: none;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-image: url(/static/public/BorderPopup.png);
-    background-size: cover;
-    width: 50%;
-    height: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.insidepopup {
+.borderpopuphead {
+    width: 100%;
+    height: 10%;
+    background-image: url(/static/public/BorderPopupHead.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+}
+.exitbtnpopup {
+    width: 6%;
+    height: 60%;
+    position: absolute;
+    right: 6.9%;
+    bottom: 17%;
+    background-image: url(/static/public/ExitButton.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.borderpopupbody {
+    position: absolute;
+    width: 100%;
+    height: 90%;
     z-index: 102;
-    background-color: white;
-    width: 92%;
-    height: 84%;
+}
+
+.outerpopupbody {
+    width: 100%;
+    height: 100%;
+    background-image: url(/static/public/BorderPopupBody.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    z-index: 104;
+}
+.innerpopupbody {
+    background-color: rgb(255, 255, 255);
+    width: 90%;
+    height: 95%;
+    z-index: 103;
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.garispopuphead {
+    background-color: rgb(255, 0, 0);
+    width: 90%;
+    height: 20%;
+}
+.garispopupbody {
+    background-color: rgb(0, 255, 213);
+    width: 90%;
+    height: 80%;
 }
 
 .mail,
@@ -66,8 +117,7 @@ body {
     transform: translate(-50%, -50%);
 }
 
-#startimg,
-#volumeimg {
+#startimg {
     height: 100%;
     width: 100%;
 }
@@ -98,10 +148,17 @@ body {
 #timeborder {
     width: 100%;
     height: 100%;
-    border-left: 3px solid;
+    border-left: 2px solid;
     font-family: PixelFont;
     display: grid;
     place-items: center;
+}
+
+#volumeborder {
+    background-image: url(/static/public/Volume.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #money,
