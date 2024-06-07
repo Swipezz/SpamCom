@@ -13,6 +13,9 @@ type handler struct {
 func NewHandler(query service.Query) *handler {
 	return &handler{query}
 }
+func ServerLess() *handler {
+	return &handler{}
+}
 
 func (h *handler) MainMenu(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("static/views/index.html"))

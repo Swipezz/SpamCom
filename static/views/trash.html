@@ -271,20 +271,20 @@ gridTiles.forEach(function (tile) {
 ///////////////
 
 // Open mail
-function divContent(id, title, sender, receiver) {
+function divContent(id, title, sender, receiver, text) {
     return `<div id="${id}" class="borderpopup" style="z-index: ${zIndexPopup + 1}">
                 <div class="borderpopuphead">
                     <div class="exitbtnpopup">
                     </div>
                 </div>
-                <div class="borderbodypopup" style="z-index: ${zIndexPopup + 2}">
-                    <div class="outerpopupbody" style="z-index: ${zIndexPopup + 3}">
+                <div class="borderbodypopup"">
+                    <div class="outerpopupbody"">
                     </div>
                     <div class="innerpopupbody">
                         <div class="garispopuphead">
                             <div class="title">
                                 <div class="borderhead">
-                                    <p class="realText1">${title}y</p>
+                                    <p class="realText1">${title}</p>
                                 </div>
                             </div>
                             <div class="profile">
@@ -292,20 +292,18 @@ function divContent(id, title, sender, receiver) {
                             </div>
                             <div class="sender">
                                 <div class="borderhead">
-                                    <p class="realText1">${sender}y</p>
+                                    <p class="realText1">${sender}</p>
                                 </div>
                             </div>
                             <div class="receiver">
                                 <div class="borderhead">
-                                    <p class="realText1">${receiver}y</p>
+                                    <p class="realText1">${receiver}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="garispopupbody">
-                            <p class="underlineBG1">Ullamco commodo eiusmod commodo ut quis velit nostrud labore culpa exercitation eiusmod anim. Exercitation dolor ipsum elit sit. Dolore elit ea quis aliquip. Lorem nulla sint ad sit officia deserunt. Lorem cillum mollit et pariatur adipisicing ut cillum cillum Lorem ipsum aliquip. Enim laboris veniam non ea dolor commodo dolore officia sit.</p>
-                            <p class="realText1">Ullamco commodo eiusmod commodo ut quis velit nostrud labore culpa exercitation eiusmod anim. Exercitation dolor ipsum elit sit. Dolore elit ea quis aliquip. Lorem nulla sint ad sit officia deserunt. Lorem cillum mollit et pariatur adipisicing ut cillum cillum Lorem ipsum aliquip. Enim laboris veniam non ea dolor commodo dolore officia sit.</p>
-                            <p class="underlineBG2">- Adamy</p>
-                            <p class="realText2">- Adamy</p>
+                            <p class="underlineBG1">${text}</p>
+                            <p class="realText1">${text}</p>
                         </div>
                     </div>
                 </div>
@@ -316,7 +314,7 @@ followItems.forEach(function (item) {
     item.addEventListener("dblclick", function (event) {
         let itemID = document.getElementById("popup" + item.id);
         if (!itemID) {
-            gridContainer.insertAdjacentHTML('beforeend', divContent("popup" + item.id, "test", "admin", "you"));
+            gridContainer.insertAdjacentHTML('beforeend', divContent("popup" + item.id, "test", "admin", "you", text));
             zIndexPopup++
             //splitTextIntoLines(text, lineLength, "popup" + item.id);
             updateClass()
@@ -332,6 +330,7 @@ gridContainer.addEventListener("click", function (event) {
         event.target.parentElement.parentElement.remove();
     }
 });
+
 // Hold mail
 var onHoldMail = false;
 function attachPopupEventListeners() {
@@ -341,10 +340,19 @@ function attachPopupEventListeners() {
                 onHoldMail = true;
                 item.dataset.active = "true";
                 item.parentElement.style.zIndex = zIndexPopup + 1
-                item.parentElement.childNodes[3].style.zIndex = zIndexPopup + 2
-                item.parentElement.childNodes[3].childNodes[1].style.zIndex = zIndexPopup + 3
                 zIndexPopup++
             }
+        });
+    });
+    // Click mail ontop
+    followPopup.forEach(function (item) {
+        item.addEventListener("mousedown", function (event) {
+            if (onHoldMail == true) {
+                return
+            }
+            item.dataset.active = "true";
+            item.style.zIndex = zIndexPopup + 1
+            zIndexPopup++
         });
     });
 }
