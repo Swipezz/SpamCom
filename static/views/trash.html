@@ -9,7 +9,7 @@
 <body>
     <div id="container1" class="position-relative">
         <img id="frameimg" src="/static/public/Frame.png" alt="">
-        <img id="garisimg" src="/static/public/Garis.png" alt="">
+        <!-- <img id="garisimg" src="/static/public/Garis.png" alt=""> -->
         <img id="cursor" src="/static/public/Cursor.png" alt="">
         <div id="container2">
             <img id="innerimg" src="/static/public/Inner.png" alt="">
@@ -86,23 +86,6 @@
                 <div id="70" class="grid-item"></div>
                 <div id="71" class="grid-item"></div>
                 <div id="72" class="grid-item"><div id="btn72" class="solid-element"><img id="recycle" src="/static/public/Recycle.png" alt=""></div></div>
-                <div id="asd" class="borderpopup">
-                    <div class="borderpopuphead">
-                        <div class="exitbtnpopup">
-                        </div>
-                    </div>
-                    <div class="borderbodypopup">
-                        <div class="outerpopupbody">
-                        </div>
-                        <div class="innerpopupbody">
-                            <div class="garispopuphead">
-                                <p>asdas</p>
-                            </div>
-                            <div class="garispopupbody">
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div id="taskbar">
                 <div id="leftborder">
@@ -124,7 +107,9 @@
 var followItems = document.querySelectorAll(".follow-element");
 var followPopup = document.querySelectorAll(".borderpopup");
 var followPopupHead = document.querySelectorAll(".borderpopuphead")
+var garisPopupBody = document.querySelectorAll(".garispopupbody")
 var gridTiles = document.querySelectorAll(".grid-item");
+var listLine = document.querySelectorAll(".line")
 var gridContainer = document.getElementById("grid-container");
 var container2 = document.getElementById("container2");
 var container1 = document.getElementById("container1");
@@ -136,6 +121,7 @@ function updateClass() {
     followPopup = document.querySelectorAll(".borderpopup");
     gridTiles = document.querySelectorAll(".grid-item");
     followPopupHead = document.querySelectorAll(".borderpopuphead")
+    listLine = document.querySelectorAll(".line")
     attachPopupEventListeners();
 }
 
@@ -143,38 +129,49 @@ function displayUserLocalTime() {
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const now = new Date().toLocaleString("en-US", { timeZone: userTimezone });
     const date = new Date(now);
-    var formatDate = date.getHours() + ":" + date.getMinutes();
+    let jam = date.getHours()
+    let menit = date.getMinutes()
+    if (date.getMinutes() < 10) {
+        menit = "0" + date.getMinutes()
+    }
+    if (date.getHours() < 10) {
+        jam = "0" + date.getHours()
+    }
+    let formatDate = jam + ":" + menit;
     document.getElementById("time").textContent = formatDate;
 }
 displayUserLocalTime();
 setInterval(displayUserLocalTime, 60000);
 
+///////////////
+// ITEM AREA //
+///////////////
+
 function moveItem(event) {
     if (this.dataset.active === "true") {
         if (onHoldMail == true) {
-            var containerRect = gridContainer.getBoundingClientRect(); // Use the main grid container dimensions
-            var maxX = containerRect.width - this.parentElement.offsetWidth;
-            var maxY = containerRect.height - this.parentElement.offsetHeight;
+            let containerRect = gridContainer.getBoundingClientRect(); // Use the main grid container dimensions
+            let maxX = containerRect.width - this.offsetWidth;
+            let maxY = containerRect.height - (this.offsetHeight + this.parentElement.querySelector(".borderbodypopup").childNodes[1].offsetHeight);
 
-            var newX = Math.min(maxX, Math.max(0, event.clientX - containerRect.left - this.parentElement.offsetWidth / 2));
-            var newY = Math.min(maxY, Math.max(0, event.clientY - containerRect.top - this.parentElement.offsetHeight / 20));
+            let newX = Math.min(maxX, Math.max(0, event.clientX - containerRect.left - this.offsetWidth / 2));
+            let newY = Math.min(maxY, Math.max(0, event.clientY - containerRect.top - (this.offsetHeight + this.parentElement.querySelector(".borderbodypopup").childNodes[1].offsetHeight) / 20));
 
             this.parentElement.style.left = newX + "px";
             this.parentElement.style.top = newY + "px";
         } else {
-            var containerRect = gridContainer.getBoundingClientRect(); // Use the main grid container dimensions
-            var maxX = containerRect.width - this.offsetWidth;
-            var maxY = containerRect.height - this.offsetHeight;
+            let containerRect = gridContainer.getBoundingClientRect(); // Use the main grid container dimensions
+            let maxX = containerRect.width - this.offsetWidth;
+            let maxY = containerRect.height - this.offsetHeight;
 
-            var newX = Math.min(maxX, Math.max(0, event.clientX - containerRect.left - this.offsetWidth / 2));
-            var newY = Math.min(maxY, Math.max(0, event.clientY - containerRect.top - this.offsetHeight / 2));
+            let newX = Math.min(maxX, Math.max(0, event.clientX - containerRect.left - this.offsetWidth / 2));
+            let newY = Math.min(maxY, Math.max(0, event.clientY - containerRect.top - this.offsetHeight / 2));
 
             this.style.left = newX + "px";
             this.style.top = newY + "px";
         }
     }
 }
-
 // Move cursor
 document.addEventListener("mousemove", function (event) {
     let parentRect = cursorParent.getBoundingClientRect();
@@ -187,12 +184,12 @@ document.addEventListener("mousemove", function (event) {
     cursor.style.left = newX + "px";
     cursor.style.top = newY + "px";
 });
-
 // Hold item
 var onHold = false;
 var onMove = false;
 var onItem = "";
 var clickTimeout;
+var zIndexPopup = 101
 
 followItems.forEach(function (item) {
     item.addEventListener("mousedown", function (event) {
@@ -223,7 +220,6 @@ followItems.forEach(function (item) {
         clearTimeout(clickTimeout);
     });
 });
-
 // Move item
 document.addEventListener("mousemove", function (event) {
     followItems.forEach(function (item) {
@@ -238,7 +234,6 @@ document.addEventListener("mousemove", function (event) {
         }
     });
 });
-
 // Drop item
 gridTiles.forEach(function (tile) {
     tile.addEventListener("mouseup", function (event) {
@@ -260,7 +255,6 @@ gridTiles.forEach(function (tile) {
                     }
                 }
             }
-
             item.dataset.active = "false";
             item.style.pointerEvents = "auto";
             item.style.position = "static";
@@ -272,55 +266,85 @@ gridTiles.forEach(function (tile) {
     });
 });
 
+///////////////
+// MAIL AREA //
+///////////////
+
 // Open mail
-function divContent(id, index, head, body) {
-    return `<div id="${id}" class="borderpopup" style="z-index: ${index + 1};">
-    <div class="borderpopuphead">
-        <div class="exitbtnpopup">
-        </div>
-    </div>
-    <div class="borderpopupbody" style="z-index: ${index + 2};">
-        <div class="outerpopupbody" style="z-index: ${index + 4};">
-        </div>
-        <div class="innerpopupbody">
-            <div class="garispopup">
-                <p>Consequat aliqua consequat elit aute velit nulla tempor cillum dolor aute qui elit do. Culpa adipisicing irure anim sint irure ullamco consectetur deserunt sint. Consequat et officia duis labore exercitation mollit consequat adipisicing.</p>
-            </div>
-        </div>
-    </div>
-</div>`
+function divContent(id, title, sender, receiver) {
+    return `<div id="${id}" class="borderpopup" style="z-index: ${zIndexPopup + 1}">
+                <div class="borderpopuphead">
+                    <div class="exitbtnpopup">
+                    </div>
+                </div>
+                <div class="borderbodypopup" style="z-index: ${zIndexPopup + 2}">
+                    <div class="outerpopupbody" style="z-index: ${zIndexPopup + 3}">
+                    </div>
+                    <div class="innerpopupbody">
+                        <div class="garispopuphead">
+                            <div class="title">
+                                <div class="borderhead">
+                                    <p class="realText1">${title}y</p>
+                                </div>
+                            </div>
+                            <div class="profile">
+                                
+                            </div>
+                            <div class="sender">
+                                <div class="borderhead">
+                                    <p class="realText1">${sender}y</p>
+                                </div>
+                            </div>
+                            <div class="receiver">
+                                <div class="borderhead">
+                                    <p class="realText1">${receiver}y</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="garispopupbody">
+                            <p class="underlineBG1">Ullamco commodo eiusmod commodo ut quis velit nostrud labore culpa exercitation eiusmod anim. Exercitation dolor ipsum elit sit. Dolore elit ea quis aliquip. Lorem nulla sint ad sit officia deserunt. Lorem cillum mollit et pariatur adipisicing ut cillum cillum Lorem ipsum aliquip. Enim laboris veniam non ea dolor commodo dolore officia sit.</p>
+                            <p class="realText1">Ullamco commodo eiusmod commodo ut quis velit nostrud labore culpa exercitation eiusmod anim. Exercitation dolor ipsum elit sit. Dolore elit ea quis aliquip. Lorem nulla sint ad sit officia deserunt. Lorem cillum mollit et pariatur adipisicing ut cillum cillum Lorem ipsum aliquip. Enim laboris veniam non ea dolor commodo dolore officia sit.</p>
+                            <p class="underlineBG2">- Adamy</p>
+                            <p class="realText2">- Adamy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`
 }
+
 followItems.forEach(function (item) {
     item.addEventListener("dblclick", function (event) {
         let itemID = document.getElementById("popup" + item.id);
         if (!itemID) {
-            gridContainer.insertAdjacentHTML('beforeend', divContent("popup" + item.id, zIndexPopup));
-            updateClass();
+            gridContainer.insertAdjacentHTML('beforeend', divContent("popup" + item.id, "test", "admin", "you"));
+            zIndexPopup++
+            //splitTextIntoLines(text, lineLength, "popup" + item.id);
+            updateClass()
+        } else {
+            document.getElementById("popup" + item.id).style.zIndex = zIndexPopup + 1
+            zIndexPopup++
         }
     });
 });
-
 // Close mail
 gridContainer.addEventListener("click", function (event) {
     if (event.target.classList.contains("exitbtnpopup")) {
         event.target.parentElement.parentElement.remove();
     }
 });
-
 // Hold mail
-var zIndexPopup = 101
 var onHoldMail = false;
 function attachPopupEventListeners() {
     followPopupHead.forEach(function (item) {
         item.addEventListener("mousedown", function (event) {
-            onHoldMail = true;
-            item.dataset.active = "true";
-            item.parentElement.style.zIndex = zIndexPopup + 1
-            item.parentElement.childNodes[3].style.zIndex = zIndexPopup + 2
-            console.log(item.parentElement.childNodes[3]);
-            item.parentElement.childNodes[3].childNodes[1].style.zIndex = zIndexPopup + 4
-            console.log(item.parentElement.childNodes[3].childNodes[1]);
-            zIndexPopup++
+            if (!event.target.classList.contains("exitbtnpopup")) {
+                onHoldMail = true;
+                item.dataset.active = "true";
+                item.parentElement.style.zIndex = zIndexPopup + 1
+                item.parentElement.childNodes[3].style.zIndex = zIndexPopup + 2
+                item.parentElement.childNodes[3].childNodes[1].style.zIndex = zIndexPopup + 3
+                zIndexPopup++
+            }
         });
     });
 }
@@ -337,17 +361,47 @@ document.addEventListener("mouseup", function (event) {
     followPopupHead.forEach(function (item) {
         onHoldMail = false;
         item.dataset.active = "false";
-        if (zIndexPopup == 997) {
-            zIndexPopup = 101
-        } 
     });
 });
+// Active mail
+// followPopup.forEach(function (popup) {
+//     popup.addEventListener("click", function (item) {
+//         console.log(item);
+//         updateClass()
+//     })
+// });
 
-// Initial call to attach event listeners
+// Add text
+const text = "Ad consequat qui pariatur elit ipsum incididunt culpa elit incididunt. Ullamco dolore magna veniam fugiat consectetur. Officia ex pariatur voluptate ut ad anim consectetur voluptate laborum dolor adipisicing officia ut veniam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita quibusdam necessitatibus aliquid, nesciunt dolorem saepe? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita.";
+const lineLength = 33; // Maximum characters per line
+
+function createLine(text, id) {
+    const lineDiv = document.createElement("div")
+    lineDiv.className = "line"
+    const lineP = document.createElement("p");
+    lineP.textContent = text;
+    document.getElementById(id).childNodes[3].childNodes[3].childNodes[3].appendChild(lineDiv).appendChild(lineP);
+}
+
+function splitTextIntoLines(text, lineLength, id) {
+    const words = text.split(" ");
+    let currentLine = "";
+
+    words.forEach(word => {
+        if ((currentLine + word).length <= lineLength) {
+            currentLine += word + " ";
+        } else {
+            createLine(currentLine.trim(), id);
+            currentLine = word + " ";
+        }
+    });
+
+    if (currentLine.length > 0) {
+        createLine(currentLine.trim(), id);
+    }
+}
+
 attachPopupEventListeners();
-
-
-
     </script>
 </body>
 </html>
