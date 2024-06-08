@@ -116,6 +116,10 @@ var container1 = document.getElementById("container1");
 var cursor = document.getElementById("cursor");
 var cursorParent = cursor.parentElement;
 
+function randomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
 function updateClass() {
     followItems = document.querySelectorAll(".follow-element");
     followPopup = document.querySelectorAll(".borderpopup");
@@ -142,6 +146,19 @@ function displayUserLocalTime() {
 }
 displayUserLocalTime();
 setInterval(displayUserLocalTime, 60000);
+
+// Move cursor
+document.addEventListener("mousemove", function (event) {
+    let parentRect = cursorParent.getBoundingClientRect();
+    let newX = event.clientX - parentRect.left - cursor.offsetWidth / 2;
+    let newY = event.clientY - parentRect.top - cursor.offsetHeight / 2;
+
+    newX = Math.min(Math.max(newX, 0), parentRect.width - cursor.offsetWidth);
+    newY = Math.min(Math.max(newY, 0), parentRect.height - cursor.offsetHeight);
+
+    cursor.style.left = newX + "px";
+    cursor.style.top = newY + "px";
+});
 
 ///////////////
 // ITEM AREA //
@@ -172,18 +189,7 @@ function moveItem(event) {
         }
     }
 }
-// Move cursor
-document.addEventListener("mousemove", function (event) {
-    let parentRect = cursorParent.getBoundingClientRect();
-    let newX = event.clientX - parentRect.left - cursor.offsetWidth / 2;
-    let newY = event.clientY - parentRect.top - cursor.offsetHeight / 2;
 
-    newX = Math.min(Math.max(newX, 0), parentRect.width - cursor.offsetWidth);
-    newY = Math.min(Math.max(newY, 0), parentRect.height - cursor.offsetHeight);
-
-    cursor.style.left = newX + "px";
-    cursor.style.top = newY + "px";
-});
 // Hold item
 var onHold = false;
 var onMove = false;
@@ -197,7 +203,7 @@ followItems.forEach(function (item) {
             onHold = true;
             childParent = item.parentNode.id;
             item.dataset.active = "true";
-
+            
             if (item.dataset.active == "true") {
                 let rect = document.getElementById("1").getBoundingClientRect();
                 let height = rect.height;
@@ -205,11 +211,12 @@ followItems.forEach(function (item) {
                 item.style.height = height + "px";
                 item.style.width = width + "px";
             }
-
+            
             item.style.pointerEvents = "none";
             item.style.position = "absolute";
-
+            
             onItem = item;
+            event.stopPropagation()
         }, 130);
     });
 
@@ -271,7 +278,7 @@ gridTiles.forEach(function (tile) {
 ///////////////
 
 // Open mail
-function divContent(id, title, sender, receiver, text) {
+function divContent(id, title, sender, receiver, text, jawaban) {
     return `<div id="${id}" class="borderpopup" style="z-index: ${zIndexPopup + 1}">
                 <div class="borderpopuphead">
                     <div class="exitbtnpopup">
@@ -304,19 +311,21 @@ function divContent(id, title, sender, receiver, text) {
                         <div class="garispopupbody">
                             <p class="underlineBG1">${text}</p>
                             <p class="realText1">${text}</p>
+                            <p id="cobatebak">${jawaban}</p>
                         </div>
                     </div>
                 </div>
             </div>`
 }
 
+const text = "Ad consequat qui pariatur elit ipsum incididunt culpa elit incididunt. Ullamco dolore magna veniam fugiat consectetur. Officia ex pariatur voluptate ut ad anim consectetur voluptate laborum dolor adipisicing officia ut veniam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita quibusdam necessitatibus aliquid, nesciunt dolorem saepe? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita.";
+
 followItems.forEach(function (item) {
     item.addEventListener("dblclick", function (event) {
         let itemID = document.getElementById("popup" + item.id);
         if (!itemID) {
-            gridContainer.insertAdjacentHTML('beforeend', divContent("popup" + item.id, "test", "admin", "you", text));
+            gridContainer.insertAdjacentHTML('beforeend', divContent("popup" + item.id, "test", "admin", "you", text, "asdasd"));
             zIndexPopup++
-            //splitTextIntoLines(text, lineLength, "popup" + item.id);
             updateClass()
         } else {
             document.getElementById("popup" + item.id).style.zIndex = zIndexPopup + 1
@@ -325,14 +334,14 @@ followItems.forEach(function (item) {
     });
 });
 // Close mail
-gridContainer.addEventListener("click", function (event) {
+container1.addEventListener("mouseup", function (event) {
     if (event.target.classList.contains("exitbtnpopup")) {
         event.target.parentElement.parentElement.remove();
     }
 });
 
 // Hold mail
-var onHoldMail = false;
+var onHoldMail = false
 function attachPopupEventListeners() {
     followPopupHead.forEach(function (item) {
         item.addEventListener("mousedown", function (event) {
@@ -341,6 +350,11 @@ function attachPopupEventListeners() {
                 item.dataset.active = "true";
                 item.parentElement.style.zIndex = zIndexPopup + 1
                 zIndexPopup++
+            } else {
+                event.target.style.backgroundImage = "url('/static/public/ExitButtonUp.png')"
+                event.target.addEventListener("mouseleave", () => {
+                    event.target.style.backgroundImage = "url('/static/public/ExitButton.png')"
+                })
             }
         });
     });
@@ -371,43 +385,17 @@ document.addEventListener("mouseup", function (event) {
         item.dataset.active = "false";
     });
 });
-// Active mail
-// followPopup.forEach(function (popup) {
-//     popup.addEventListener("click", function (item) {
-//         console.log(item);
-//         updateClass()
-//     })
-// });
-
-// Add text
-const text = "Ad consequat qui pariatur elit ipsum incididunt culpa elit incididunt. Ullamco dolore magna veniam fugiat consectetur. Officia ex pariatur voluptate ut ad anim consectetur voluptate laborum dolor adipisicing officia ut veniam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita quibusdam necessitatibus aliquid, nesciunt dolorem saepe? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita.";
-const lineLength = 33; // Maximum characters per line
-
-function createLine(text, id) {
-    const lineDiv = document.createElement("div")
-    lineDiv.className = "line"
-    const lineP = document.createElement("p");
-    lineP.textContent = text;
-    document.getElementById(id).childNodes[3].childNodes[3].childNodes[3].appendChild(lineDiv).appendChild(lineP);
-}
-
-function splitTextIntoLines(text, lineLength, id) {
-    const words = text.split(" ");
-    let currentLine = "";
-
-    words.forEach(word => {
-        if ((currentLine + word).length <= lineLength) {
-            currentLine += word + " ";
-        } else {
-            createLine(currentLine.trim(), id);
-            currentLine = word + " ";
-        }
-    });
-
-    if (currentLine.length > 0) {
-        createLine(currentLine.trim(), id);
-    }
-}
+// OnClick Item
+followItems.forEach(function (item) {
+    item.addEventListener("click", function (event) {
+        event.target.classList.add('pressed')
+        event.target.style.border = "3px dashed rgba(255, 255, 255, 0.655)"
+        container1.onmousedown = function () {
+            event.target.style.border = "none"
+            event.target.classList.remove('pressed')
+        } 
+    })
+})
 
 attachPopupEventListeners();
     </script>

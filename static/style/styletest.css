@@ -38,6 +38,17 @@ body {
     height: 100%;
     z-index: 100;
 }
+.follow-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+.follow-element.pressed {
+    transform: scale(1.1, 0.9);
+}
 
 .borderpopup {
     position: absolute;
@@ -362,6 +373,10 @@ body {
     height: 4%;
 }
 
+#cobatebak {
+    display: none;
+    position: absolute;
+}
 
 
 
