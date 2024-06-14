@@ -14,10 +14,10 @@
         <div id="container2">
             <img id="innerimg" src="/static/public/Inner.png" alt="">
             <div id="grid-container">
-                <div id="1" class="grid-item"><div id="btn1" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
-                <div id="2" class="grid-item"><div id="btn2" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
-                <div id="3" class="grid-item"><div id="btn3" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
-                <div id="4" class="grid-item"><div id="btn4" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt=""></div></div>
+                <div id="1" class="grid-item"></div>
+                <div id="2" class="grid-item"></div>
+                <div id="3" class="grid-item"></div>
+                <div id="4" class="grid-item"></div>
                 <div id="5" class="grid-item"></div>
                 <div id="6" class="grid-item"></div>
                 <div id="7" class="grid-item"></div>
@@ -83,7 +83,7 @@
                 <div id="67" class="grid-item"></div>
                 <div id="68" class="grid-item"></div>
                 <div id="69" class="grid-item"></div>
-                <div id="70" class="grid-item"></div>
+                <div id="70" class="grid-item"><div id="mail70" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt="Mail"></div></div>
                 <div id="71" class="grid-item"></div>
                 <div id="72" class="grid-item"><div id="btn72" class="solid-element"><img id="recycle" src="/static/public/Recycle.png" alt=""></div></div>
             </div>
@@ -126,7 +126,6 @@ function updateClass() {
     gridTiles = document.querySelectorAll(".grid-item");
     followPopupHead = document.querySelectorAll(".borderpopuphead")
     listLine = document.querySelectorAll(".line")
-    attachPopupEventListeners();
 }
 
 function displayUserLocalTime() {
@@ -164,6 +163,27 @@ document.addEventListener("mousemove", function (event) {
 // ITEM AREA //
 ///////////////
 
+// Create Item
+document.getElementById("taskbar").addEventListener("click", function (event) {
+    createItem()
+})
+
+function createItem() {
+    let id = 1
+    while (true) {
+        if (document.getElementById(id).childElementCount != 0) {
+            id += 12    
+            console.log(id);
+        } else {
+            document.getElementById(id).insertAdjacentHTML("beforeend", `<div id="mail${id}" class="follow-element"><img class="mail" src="/static/public/Mail.png" alt="Mail"></div>`)
+            updateClass()
+            console.log(("sukses"));
+            console.log("id = ", id);
+            break
+        }
+    }
+}
+
 function moveItem(event) {
     if (this.dataset.active === "true") {
         if (onHoldMail == true) {
@@ -197,36 +217,7 @@ var onItem = "";
 var clickTimeout;
 var zIndexPopup = 101
 
-followItems.forEach(function (item) {
-    item.addEventListener("mousedown", function (event) {
-        clickTimeout = setTimeout(() => {
-            onHold = true;
-            childParent = item.parentNode.id;
-            item.dataset.active = "true";
-            
-            if (item.dataset.active == "true") {
-                let rect = document.getElementById("1").getBoundingClientRect();
-                let height = rect.height;
-                let width = rect.width;
-                item.style.height = height + "px";
-                item.style.width = width + "px";
-            }
-            
-            item.style.pointerEvents = "none";
-            item.style.position = "absolute";
-            
-            onItem = item;
-            event.stopPropagation()
-        }, 130);
-    });
 
-    item.addEventListener("mouseup", function (event) {
-        clearTimeout(clickTimeout);
-    });
-    item.addEventListener("dblclick", function (event) {
-        clearTimeout(clickTimeout);
-    });
-});
 // Move item
 document.addEventListener("mousemove", function (event) {
     followItems.forEach(function (item) {
@@ -279,7 +270,7 @@ gridTiles.forEach(function (tile) {
 
 // Open mail
 function divContent(id, title, sender, receiver, text, jawaban) {
-    return `<div id="${id}" class="borderpopup" style="z-index: ${zIndexPopup + 1}">
+    return `<div id="popup${id}" class="borderpopup" style="z-index: ${zIndexPopup + 1}">
                 <div class="borderpopuphead">
                     <div class="exitbtnpopup">
                     </div>
@@ -320,19 +311,7 @@ function divContent(id, title, sender, receiver, text, jawaban) {
 
 const text = "Ad consequat qui pariatur elit ipsum incididunt culpa elit incididunt. Ullamco dolore magna veniam fugiat consectetur. Officia ex pariatur voluptate ut ad anim consectetur voluptate laborum dolor adipisicing officia ut veniam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita quibusdam necessitatibus aliquid, nesciunt dolorem saepe? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt asperiores eius voluptates ut tempore exercitationem sequi obcaecati nihil adipisci in et quo laborum, expedita.";
 
-followItems.forEach(function (item) {
-    item.addEventListener("dblclick", function (event) {
-        let itemID = document.getElementById("popup" + item.id);
-        if (!itemID) {
-            gridContainer.insertAdjacentHTML('beforeend', divContent("popup" + item.id, "test", "admin", "you", text, "asdasd"));
-            zIndexPopup++
-            updateClass()
-        } else {
-            document.getElementById("popup" + item.id).style.zIndex = zIndexPopup + 1
-            zIndexPopup++
-        }
-    });
-});
+
 // Close mail
 container1.addEventListener("mouseup", function (event) {
     if (event.target.classList.contains("exitbtnpopup")) {
@@ -340,10 +319,14 @@ container1.addEventListener("mouseup", function (event) {
     }
 });
 
-// Hold mail
+///////////////////
+// EventListener //
+///////////////////
+
 var onHoldMail = false
 function attachPopupEventListeners() {
     followPopupHead.forEach(function (item) {
+        // Hold mail
         item.addEventListener("mousedown", function (event) {
             if (!event.target.classList.contains("exitbtnpopup")) {
                 onHoldMail = true;
@@ -369,6 +352,65 @@ function attachPopupEventListeners() {
             zIndexPopup++
         });
     });
+    // OnClick Item
+    followItems.forEach(function (item) {
+        item.addEventListener("click", function (event) {
+            event.target.classList.add('pressed')
+            event.target.style.border = "3px dashed rgba(255, 255, 255, 0.655)"
+            container1.onmousedown = function () {
+                event.target.style.border = "none"
+                event.target.classList.remove('pressed')
+            } 
+        })
+    })
+    // Open Mail
+    followItems.forEach(function (item) {
+        item.addEventListener("dblclick", function (event) {
+            let itemID = document.getElementById("popup" + item.id);
+            if (!itemID) {
+                gridContainer.insertAdjacentHTML('beforeend', divContent(item.id, "test " + item.id, "admin", "you", text, "asdasd"));
+                zIndexPopup++
+                updateClass()
+            } else {
+                document.getElementById("popup" + item.id).style.zIndex = zIndexPopup + 1
+                zIndexPopup++
+            }
+        });
+    });
+    // Move Mail
+    followItems.forEach(function (item) {
+        item.addEventListener("mousedown", function (event) {
+            clickTimeout = setTimeout(() => {
+                onHold = true;
+                childParent = item.parentNode.id;
+                item.dataset.active = "true";
+                
+                if (item.dataset.active == "true") {
+                    let rect = document.getElementById("1").getBoundingClientRect();
+                    let height = rect.height;
+                    let width = rect.width;
+                    item.style.height = height + "px";
+                    item.style.width = width + "px";
+                }
+                
+                item.style.pointerEvents = "none";
+                item.style.position = "absolute";
+                
+                onItem = item;
+                event.stopPropagation()
+            }, 130);
+        });
+
+        item.addEventListener("mouseup", function (event) {
+            console.log("up");
+            clearTimeout(clickTimeout);
+            });
+            item.addEventListener("dblclick", function (event) {
+            console.log("db");
+            clearTimeout(clickTimeout);
+        });
+    });
+
 }
 // Move mail
 document.addEventListener("mousemove", function (event) {
@@ -385,17 +427,7 @@ document.addEventListener("mouseup", function (event) {
         item.dataset.active = "false";
     });
 });
-// OnClick Item
-followItems.forEach(function (item) {
-    item.addEventListener("click", function (event) {
-        event.target.classList.add('pressed')
-        event.target.style.border = "3px dashed rgba(255, 255, 255, 0.655)"
-        container1.onmousedown = function () {
-            event.target.style.border = "none"
-            event.target.classList.remove('pressed')
-        } 
-    })
-})
+
 
 attachPopupEventListeners();
     </script>
