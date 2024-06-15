@@ -3,57 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Press Stretch Animation</title>
-    <style>
-        .pressable {
-            width: 100px;
-            height: 100px;
-            background-color: lightblue;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 10px;
-            transition: transform 0.2s ease;
-            user-select: none;
-            cursor: pointer;
-        }
-
-        .pressed {
-            transform: scale(1.1, 0.9);
-        }
-    </style>
+    <title>Event Listener Example</title>
 </head>
 <body>
-    <div id="pressable-div" class="pressable">Press Me</div>
+    <div class="hi">Click me 1</div>
+    <div class="hi">Click me 2</div>
+    <div class="hi">Click me 3</div>
+    <button id="remove">Remove Event Listeners</button>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const pressableDiv = document.getElementById('pressable-div');
+        // Get all elements with class "hi"
+        const classHi = document.querySelectorAll('.hi');
 
-            pressableDiv.addEventListener('mousedown', () => {
-                pressableDiv.classList.add('pressed');
-            });
+        // Define the event listener function
+        function handleClick(event) {
+            console.log(event.target);
+        }
 
-            pressableDiv.addEventListener('mouseup', () => {
-                pressableDiv.classList.remove('pressed');
-            });
+        // Add the event listener to each element
+        classHi.forEach(function (items) {
+            items.addEventListener("click", handleClick);
+        });
 
-            pressableDiv.addEventListener('mouseleave', () => {
-                pressableDiv.classList.remove('pressed');
+        // Add event listener to the button to remove the click event listeners
+        document.getElementById('remove').addEventListener('click', function() {
+            classHi.forEach(function (items) {
+                items.removeEventListener("click", handleClick);
             });
-
-            // For mobile touch events
-            pressableDiv.addEventListener('touchstart', () => {
-                pressableDiv.classList.add('pressed');
-            });
-
-            pressableDiv.addEventListener('touchend', () => {
-                pressableDiv.classList.remove('pressed');
-            });
-
-            pressableDiv.addEventListener('touchcancel', () => {
-                pressableDiv.classList.remove('pressed');
-            });
+            console.log('Event listeners removed');
         });
     </script>
 </body>
